@@ -12,9 +12,136 @@ app.use(cors({
 
 app.use(express.json());
 
-// Ruta base
+// Ruta base - Dashboard with Vercel Web Analytics
 app.get("/", (req, res) => {
-  res.json({ status: "Telemetr-a API running" });
+  res.send(`
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telemetría API Dashboard</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .header {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    h1 {
+      margin: 0 0 10px 0;
+      color: #333;
+    }
+    .status {
+      color: #22c55e;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .endpoints {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin: 0 0 20px 0;
+      color: #333;
+    }
+    .endpoint {
+      display: flex;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #e5e5e5;
+    }
+    .endpoint:last-child {
+      border-bottom: none;
+    }
+    .method {
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin-right: 12px;
+      font-size: 12px;
+      min-width: 50px;
+      text-align: center;
+    }
+    .get {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+    .post {
+      background: #dcfce7;
+      color: #166534;
+    }
+    .path {
+      font-family: 'Courier New', monospace;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🔬 Telemetría API</h1>
+    <p class="status">✓ API Running</p>
+  </div>
+  
+  <div class="endpoints">
+    <h2>Available Endpoints</h2>
+    <div class="endpoint">
+      <span class="method get">GET</span>
+      <span class="path">/dispositivos</span>
+    </div>
+    <div class="endpoint">
+      <span class="method post">POST</span>
+      <span class="path">/dispositivos</span>
+    </div>
+    <div class="endpoint">
+      <span class="method get">GET</span>
+      <span class="path">/eventos</span>
+    </div>
+    <div class="endpoint">
+      <span class="method post">POST</span>
+      <span class="path">/eventos</span>
+    </div>
+    <div class="endpoint">
+      <span class="method get">GET</span>
+      <span class="path">/logs</span>
+    </div>
+    <div class="endpoint">
+      <span class="method post">POST</span>
+      <span class="path">/logs</span>
+    </div>
+    <div class="endpoint">
+      <span class="method get">GET</span>
+      <span class="path">/metricas</span>
+    </div>
+    <div class="endpoint">
+      <span class="method post">POST</span>
+      <span class="path">/metricas</span>
+    </div>
+  </div>
+
+  <!-- Vercel Web Analytics -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
+  `);
+});
+
+// API status endpoint (JSON response)
+app.get("/api/status", (req, res) => {
+  res.json({ status: "Telemetría API running", ok: true });
 });
 
 // GET /dispositivos
