@@ -1,14 +1,14 @@
-import cors from "cors";
-
-app.use(cors({
-  origin: "https://telemetr-a-production-8eb9.up.railway.app"
-}));
-
 import express from "express";
+import cors from "cors";
 import pool from "./db.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+// CORS — debe ir después de crear app
+app.use(cors({
+  origin: "*"
+}));
 
 app.use(express.json());
 
@@ -47,10 +47,7 @@ app.post("/dispositivos", async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Telemetr-a API running on port ${port}`);
-});
-
+// GET /eventos
 app.get("/eventos", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM eventos ORDER BY id DESC");
@@ -61,6 +58,7 @@ app.get("/eventos", async (req, res) => {
   }
 });
 
+// POST /eventos
 app.post("/eventos", async (req, res) => {
   const { uuid_dispositivo, tipo, payload } = req.body;
 
@@ -79,6 +77,7 @@ app.post("/eventos", async (req, res) => {
   }
 });
 
+// GET /logs
 app.get("/logs", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM logs ORDER BY id DESC");
@@ -89,6 +88,7 @@ app.get("/logs", async (req, res) => {
   }
 });
 
+// POST /logs
 app.post("/logs", async (req, res) => {
   const { uuid_dispositivo, nivel, mensaje, contexto } = req.body;
 
@@ -107,6 +107,7 @@ app.post("/logs", async (req, res) => {
   }
 });
 
+// GET /metricas
 app.get("/metricas", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM metricas ORDER BY id DESC");
@@ -117,15 +118,16 @@ app.get("/metricas", async (req, res) => {
   }
 });
 
+// POST /metricas
 app.post("/metricas", async (req, res) => {
-  const { uuid_dispositivo, nombre, valor, unidad } = req.body;
+  const { uuid_dispositivo, tipo, valor } = req.body;
 
   try {
     const result = await pool.query(
-      `INSERT INTO metricas (uuid_dispositivo, nombre, valor, unidad)
-       VALUES ($1, $2, $3, $4)
+      `INSERT INTO metricas (uuid_dispositivo, tipo, valor)
+       VALUES ($1, $2, $3)
        RETURNING *`,
-      [uuid_dispositivo, nombre, valor, unidad]
+      [uuid_dispositivo, tipo, valor]
     );
 
     res.json({ ok: true, data: result.rows[0] });
@@ -135,4 +137,7 @@ app.post("/metricas", async (req, res) => {
   }
 });
 
-
+// Iniciar servidor
+app.listen(port, () => {
+  console.log(`Telemetr-a API running on port ${port}`);
+});
