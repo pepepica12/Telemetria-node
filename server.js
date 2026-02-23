@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import pool from "./db.js";
+import buscar from "./routes/buscar.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -10,6 +11,7 @@ app.use(cors({
   origin: "*"
 }));
 
+app.use("/buscar", buscar);
 app.use(express.json());
 
 // Ruta base
